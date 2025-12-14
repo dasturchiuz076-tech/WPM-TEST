@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Pro WPM Test - Professional Tezlik Testi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-keyboard"></i>
+                <h1>ProWPM Tester</h1>
+            </div>
+            <div class="user-stats">
+                <span id="bestWPM">Rekord: 0 WPM</span>
+                <span id="totalTests">Testlar: 0</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Yon panel -->
+            <aside class="sidebar">
+                <div class="settings-panel">
+                    <h3><i class="fas fa-cog"></i> Sozlamalar</h3>
+                    
+                    <div class="setting-group">
+                        <label for="timeSelect">
+                            <i class="fas fa-clock"></i> Test vaqti
+                        </label>
+                        <select id="timeSelect" class="select-box">
+                            <option value="15">15 soniya</option>
+                            <option value="30">30 soniya</option>
+                            <option value="60" selected>60 soniya</option>
+                            <option value="120">2 daqiqa</option>
+                            <option value="300">5 daqiqa</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group">
+                        <label for="difficultySelect">
+                            <i class="fas fa-chart-line"></i> Qiyinlik darajasi
+                        </label>
+                        <select id="difficultySelect" class="select-box">
+                            <option value="easy">Oson</option>
+                            <option value="medium" selected>Oʻrta</option>
+                            <option value="hard">Qiyin</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group">
+                        <label for="languageSelect">
+                            <i class="fas fa-globe"></i> Til
+                        </label>
+                        <select id="languageSelect" class="select-box">
+                            <option value="uz">Oʻzbekcha</option>
+                            <option value="en">English</option>
+                            <option value="ru">Русский</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group">
+                        <label>
+                            <i class="fas fa-feather-alt"></i> Oʻchirish tugmasi
+                        </label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="backspaceToggle" checked>
+                            <label for="backspaceToggle" class="toggle-label"></label>
+                            <span id="backspaceStatus">Yoqilgan</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label>
+                            <i class="fas fa-volume-up"></i> Ovoz effektlari
+                        </label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <label for="soundToggle" class="toggle-label"></label>
+                            <span id="soundStatus">Yoqilgan</span>
+                        </div>
+                    </div>
+
+                    <button id="applySettings" class="btn-save">
+                        <i class="fas fa-save"></i> Sozlamalarni Saqlash
+                    </button>
+                </div>
+
+                <!-- Statistika paneli -->
+                <div class="stats-history">
+                    <h3><i class="fas fa-chart-bar"></i> Statistika</h3>
+                    <canvas id="statsChart"></canvas>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-title">Oʻrtacha WPM</div>
+                            <div class="stat-number" id="avgWPM">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-title">Oʻrtacha aniqlik</div>
+                            <div class="stat-number" id="avgAccuracy">0%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-title">Jami soʻzlar</div>
+                            <div class="stat-number" id="totalWords">0</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Asosiy test maydoni -->
+            <main class="test-area">
+                <div class="test-header">
+                    <div class="live-stats">
+                        <div class="live-stat">
+                            <span class="live-label">WPM</span>
+                            <span id="liveWPM" class="live-value">0</span>
+                        </div>
+                        <div class="live-stat">
+                            <span class="live-label">Aniqlik</span>
+                            <span id="liveAccuracy" class="live-value">100%</span>
+                        </div>
+                        <div class="live-stat">
+                            <span class="live-label">Qolgan vaqt</span>
+                            <span id="liveTimer" class="live-value">60s</span>
+                        </div>
+                        <div class="live-stat">
+                            <span class="live-label">Xatolar</span>
+                            <span id="liveErrors" class="live-value">0</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+
+                <!-- Test matni -->
+                <div class="text-container">
+                    <div class="text-header">
+                        <span id="textSource">Matn manbai: Oʻzbek adabiyoti</span>
+                        <span id="wordCount">Soʻzlar soni: 0</span>
+                    </div>
+                    
+                    <div class="text-display" id="textDisplay">
+                        <div class="cursor" id="cursor"></div>
+                    </div>
+
+                    <div class="typing-area">
+                        <textarea 
+                            id="textInput" 
+                            placeholder="Matnni bu yerga terishni boshlang yoki SPACE tugmasini bosing..."
+                            rows="3"
+                            autocomplete="off"
+                            autocorrect="off"
+                            autocapitalize="off"
+                            spellcheck="false"
+                        ></textarea>
+                        
+                        <div class="input-info">
+                            <span><i class="fas fa-info-circle"></i> ESC: Pause | Tab: Yangi matn | Ctrl+R: Qayta boshlash</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kontrollar -->
+                <div class="control-panel">
+                    <button id="startBtn" class="btn-control btn-primary">
+                        <i class="fas fa-play"></i> Testni Boshlash
+                    </button>
+                    <button id="pauseBtn" class="btn-control btn-secondary" disabled>
+                        <i class="fas fa-pause"></i> Pauza
+                    </button>
+                    <button id="restartBtn" class="btn-control btn-warning">
+                        <i class="fas fa-redo"></i> Qayta Boshlash
+                    </button>
+                    <button id="newTextBtn" class="btn-control btn-success">
+                        <i class="fas fa-sync"></i> Yangi Matn
+                    </button>
+                    <button id="leaderboardBtn" class="btn-control btn-info">
+                        <i class="fas fa-trophy"></i> Reyting
+                    </button>
+                </div>
+
+                <!-- Natijalar -->
+                <div class="results-panel" id="resultsPanel" style="display: none;">
+                    <h3><i class="fas fa-medal"></i> Test Natijalari</h3>
+                    <div class="results-grid">
+                        <div class="result-card highlight">
+                            <div class="result-title">WPM</div>
+                            <div class="result-value" id="resultWPM">0</div>
+                            <div class="result-desc">Soatiga soʻzlar</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-title">Aniqlik</div>
+                            <div class="result-value" id="resultAccuracy">0%</div>
+                            <div class="result-desc">Toʻgʻri belgilar</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-title">Xatolar</div>
+                            <div class="result-value" id="resultErrors">0</div>
+                            <div class="result-desc">Notoʻgʻri terilganlar</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-title">Vaqt</div>
+                            <div class="result-value" id="resultTime">0s</div>
+                            <div class="result-desc">Test davomiyligi</div>
+                        </div>
+                    </div>
+                    <div class="result-actions">
+                        <button id="shareBtn" class="btn-share">
+                            <i class="fas fa-share-alt"></i> Natijani Ulashish
+                        </button>
+                        <button id="saveResultBtn" class="btn-save-result">
+                            <i class="fas fa-download"></i> Natijani Saqlash
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Qisqartma tugmalar -->
+                <div class="shortcuts">
+                    <h4><i class="fas fa-keyboard"></i> Qisqartma tugmalari:</h4>
+                    <div class="shortcut-grid">
+                        <kbd>Space</kbd> <span>Testni boshlash</span>
+                        <kbd>Esc</kbd> <span>Pauza</span>
+                        <kbd>Tab</kbd> <span>Yangi matn</span>
+                        <kbd>Ctrl+R</kbd> <span>Qayta boshlash</span>
+                        <kbd>Ctrl+S</kbd> <span>Sozlamalar</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2024 ProWPM Tester | 
+                <span id="version">Version 2.0</span> | 
+                <span id="charCount">Belgilar: 0</span> | 
+                <span id="themeToggle" class="theme-btn">
+                    <i class="fas fa-moon"></i> Tema
+                </span>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Chart.js kutubxonasi -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
