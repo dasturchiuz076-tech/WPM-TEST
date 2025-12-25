@@ -3,10 +3,14 @@
 import os
 import sys
 
-
 def main():
     """Run administrative tasks."""
+    # Agar sizning sozlamalar papkangiz 'config' deb nomlangan bo'lsa:
+    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+    
+    # Agar sizning sozlamalar papkangiz 'tarix_platforma' deb nomlangan bo'lsa:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tarix_platforma.settings')
+    
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -15,7 +19,6 @@ def main():
             "available on your PYTHONPATH environment variable?"
         ) from exc
     execute_from_command_line(sys.argv)
-
 
 if __name__ == '__main__':
     main()
