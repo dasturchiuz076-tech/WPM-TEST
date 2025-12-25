@@ -1,0 +1,62 @@
+<!-- Mobil pastki navigatsiya (faqat mobil qurilmalarda) -->
+<div class="mobile-bottom-nav d-lg-none">
+    <div class="mobile-nav-items">
+        <a href="{% url 'home' %}" class="mobile-nav-item {% if request.path == '/' %}active{% endif %}">
+            <div class="mobile-nav-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <span class="mobile-nav-label">Bosh</span>
+        </a>
+        
+        <a href="{% url 'history:period_list' category='world' %}" class="mobile-nav-item">
+            <div class="mobile-nav-icon">
+                <i class="fas fa-globe"></i>
+            </div>
+            <span class="mobile-nav-label">Jahon</span>
+        </a>
+        
+        <a href="{% url 'history:period_list' category='uzbekistan' %}" class="mobile-nav-item">
+            <div class="mobile-nav-icon">
+                <i class="fas fa-flag"></i>
+            </div>
+            <span class="mobile-nav-label">O'zbek</span>
+        </a>
+        
+        <a href="{% url 'testsystem:quiz_list' %}" class="mobile-nav-item">
+            <div class="mobile-nav-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <span class="mobile-nav-label">Test</span>
+        </a>
+        
+        {% if user.is_authenticated %}
+        <a href="{% url 'users:profile' %}" class="mobile-nav-item">
+            <div class="mobile-nav-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <span class="mobile-nav-label">Profil</span>
+        </a>
+        {% else %}
+        <a href="{% url 'users:login' %}" class="mobile-nav-item">
+            <div class="mobile-nav-icon">
+                <i class="fas fa-sign-in-alt"></i>
+            </div>
+            <span class="mobile-nav-label">Kirish</span>
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Mobil menyu uchun JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobil navigatsiyani faollashtirish
+    const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+    mobileNavItems.forEach(item => {
+        item.addEventListener('click', function() {
+            mobileNavItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+});
+</script>
