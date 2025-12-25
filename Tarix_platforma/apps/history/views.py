@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -252,7 +253,7 @@ class TopicDetailView(DetailView):
         return super().get(request, *args, **kwargs)
 
 
-@LoginRequiredMixin
+@login_required
 def mark_topic_as_read(request, pk):
     topic = get_object_or_404(Topic, pk=pk)
     

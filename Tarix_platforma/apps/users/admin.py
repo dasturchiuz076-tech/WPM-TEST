@@ -32,10 +32,14 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'phone_number', 'city', 'gender', 'birth_date')
+    list_display = ('user', 'get_phone_number', 'city', 'gender', 'birth_date')
     list_filter = ('gender', 'city')
-    search_fields = ('user__username', 'user__email', 'phone_number', 'city')
+    search_fields = ('user__username', 'user__email', 'user__phone_number', 'city')
     raw_id_fields = ('user',)
+
+    def get_phone_number(self, obj):
+        return getattr(obj.user, 'phone_number', '')
+    get_phone_number.short_description = 'Telefon'
 
 @admin.register(UserActivity)
 class UserActivityAdmin(admin.ModelAdmin):

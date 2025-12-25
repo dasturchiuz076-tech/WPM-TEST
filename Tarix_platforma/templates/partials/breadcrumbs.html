@@ -1,44 +1,36 @@
 <!-- Navigatsiya yo'li (Breadcrumb) -->
 {% if breadcrumbs %}
-<nav class="breadcrumb-nav" aria-label="breadcrumb">
-    <div class="container">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{% url 'home' %}">
-                    <i class="fas fa-home"></i>
-                    <span class="d-none d-sm-inline">Bosh sahifa</span>
-                </a>
-            </li>
-            
-            {% for crumb in breadcrumbs %}
-                {% if forloop.last %}
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {% if crumb.icon %}
-                            <i class="{{ crumb.icon }} me-1"></i>
-                        {% endif %}
-                        {{ crumb.title }}
-                    </li>
-                {% else %}
-                    <li class="breadcrumb-item">
-                        <a href="{{ crumb.url }}">
-                            {% if crumb.icon %}
-                                <i class="{{ crumb.icon }} me-1"></i>
-                            {% endif %}
+    <nav class="breadcrumb-nav" aria-label="breadcrumb">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'home' %}">
+                        <i class="fas fa-home"></i>
+                        <span class="d-none d-sm-inline">Bosh sahifa</span>
+                    </a>
+                </li>
+                {% for crumb in breadcrumbs %}
+                    {% if forloop.last %}
+                        <li class="breadcrumb-item active" aria-current="page">
+                            {% if crumb.icon %}<i class="{{ crumb.icon }} me-1"></i>{% endif %}
                             {{ crumb.title }}
-                        </a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ol>
-        
-        {% if page_title %}
-        <div class="page-title-section">
-            <h1 class="page-title">{{ page_title }}</h1>
-            {% if page_subtitle %}
-            <p class="page-subtitle">{{ page_subtitle }}</p>
+                        </li>
+                    {% else %}
+                        <li class="breadcrumb-item">
+                            <a href="{{ crumb.url }}">
+                                {% if crumb.icon %}<i class="{{ crumb.icon }} me-1"></i>{% endif %}
+                                {{ crumb.title }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+            {% if page_title %}
+                <div class="page-title-section">
+                    <h1 class="page-title">{{ page_title }}</h1>
+                    {% if page_subtitle %}<p class="page-subtitle">{{ page_subtitle }}</p>{% endif %}
+                </div>
             {% endif %}
         </div>
-        {% endif %}
-    </div>
-</nav>
+    </nav>
 {% endif %}

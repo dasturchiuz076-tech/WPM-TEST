@@ -1,180 +1,158 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load widget_tweaks %}
-
 {% block title %}Kirish | Tarix Platformasi{% endblock %}
-
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/users/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/users/auth.css' %}">
 {% endblock %}
-
 {% block content %}
-<div class="auth-container">
-    <div class="auth-wrapper">
-        <!-- Chap tomon: Tasvir va ma'lumot -->
-        <div class="auth-left">
-            <div class="auth-illustration">
-                <img src="{% static 'images/login-illustration.svg' %}" alt="Kirish" class="img-fluid">
-            </div>
-            <div class="auth-info">
-                <h3 class="auth-info-title">Tarix Platformasiga Xush Kelibsiz!</h3>
-                <p class="auth-info-text">
-                    Jahon va O'zbekiston tarixini o'rganish, testlar yechish 
-                    va bilimingizni oshirish uchun platformamizga kirishingiz mumkin.
-                </p>
-                <div class="auth-features">
-                    <div class="feature-item">
-                        <i class="fas fa-book feature-icon"></i>
-                        <span>500+ tarixiy mavzu</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-question-circle feature-icon"></i>
-                        <span>3000+ test savoli</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-chart-line feature-icon"></i>
-                        <span>Shaxsiy progress</span>
+    <div class="auth-container">
+        <div class="auth-wrapper">
+            <!-- Chap tomon: Tasvir va ma'lumot -->
+            <div class="auth-left">
+                <div class="auth-illustration">
+                    <img src="{% static 'images/login-illustration.svg' %}"
+                         alt="Kirish"
+                         class="img-fluid">
+                </div>
+                <div class="auth-info">
+                    <h3 class="auth-info-title">Tarix Platformasiga Xush Kelibsiz!</h3>
+                    <p class="auth-info-text">
+                        Jahon va O'zbekiston tarixini o'rganish, testlar yechish
+                        va bilimingizni oshirish uchun platformamizga kirishingiz mumkin.
+                    </p>
+                    <div class="auth-features">
+                        <div class="feature-item">
+                            <i class="fas fa-book feature-icon"></i>
+                            <span>500+ tarixiy mavzu</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-question-circle feature-icon"></i>
+                            <span>3000+ test savoli</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line feature-icon"></i>
+                            <span>Shaxsiy progress</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- O'ng tomon: Forma -->
-        <div class="auth-right">
-            <div class="auth-card">
-                <div class="auth-header">
-                    <div class="auth-icon">
-                        <i class="fas fa-sign-in-alt"></i>
+            <!-- O'ng tomon: Forma -->
+            <div class="auth-right">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="auth-icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <h2 class="auth-title">Hisobingizga Kirish</h2>
+                        <p class="auth-subtitle">Ma'lumotlaringizni kiriting</p>
                     </div>
-                    <h2 class="auth-title">Hisobingizga Kirish</h2>
-                    <p class="auth-subtitle">Ma'lumotlaringizni kiriting</p>
+                    <form method="POST"
+                          action="{% url 'users:login' %}"
+                          class="auth-form"
+                          id="loginForm">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger auth-alert" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                {{ form.non_field_errors|first }}
+                            </div>
+                        {% endif %}
+                        <!-- Username/Email -->
+                        <div class="form-group">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user me-2"></i>Foydalanuvchi nomi yoki Email
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-at"></i>
+                                </span>
+                                {{ form.username|add_class:"form-control"|attr:"placeholder:username yoki email@example.com" }}
+                            </div>
+                            {% if form.username.errors %}<div class="invalid-feedback d-block">{{ form.username.errors|first }}</div>{% endif %}
+                        </div>
+                        <!-- Parol -->
+                        <div class="form-group">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock me-2"></i>Parol
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-key"></i>
+                                </span>
+                                {{ form.password|add_class:"form-control"|attr:"placeholder:********"|attr:"id:password" }}
+                                <button type="button" class="input-group-text toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password.errors %}<div class="invalid-feedback d-block">{{ form.password.errors|first }}</div>{% endif %}
+                            <div class="form-text">
+                                <a href="{% url 'users:password_reset' %}" class="text-decoration-none">
+                                    <i class="fas fa-key me-1"></i>Parolni unutdingizmi?
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Esda qolish -->
+                        <div class="form-check mb-4">
+                            {{ form.remember_me|add_class:"form-check-input" }}
+                            <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">Meni eslab qol</label>
+                        </div>
+                        <!-- Submit tugmasi -->
+                        <button type="submit" class="btn btn-primary auth-btn w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Kirish
+                        </button>
+                        <!-- Ajratuvchi -->
+                        <div class="auth-divider">
+                            <span>yoki</span>
+                        </div>
+                        <!-- Social login -->
+                        <div class="social-login">
+                            <p class="text-center mb-3">Ijtimoiy tarmoqlar orqali kirish:</p>
+                            <div class="social-buttons">
+                                <a href="#" class="btn btn-social google">
+                                    <i class="fab fa-google me-2"></i>Google
+                                </a>
+                                <a href="#" class="btn btn-social telegram">
+                                    <i class="fab fa-telegram me-2"></i>Telegram
+                                </a>
+                                <a href="#" class="btn btn-social facebook">
+                                    <i class="fab fa-facebook me-2"></i>Facebook
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Ro'yxatdan o'tish havolasi -->
+                        <div class="auth-footer text-center mt-4">
+                            <p class="mb-0">
+                                Hisobingiz yo'qmi?
+                                <a href="{% url 'users:register' %}" class="auth-link">Ro'yxatdan o'ting</a>
+                            </p>
+                        </div>
+                    </form>
                 </div>
-
-                <form method="POST" action="{% url 'users:login' %}" class="auth-form" id="loginForm">
-                    {% csrf_token %}
-                    
-                    {% if form.non_field_errors %}
-                    <div class="alert alert-danger auth-alert" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        {{ form.non_field_errors|first }}
-                    </div>
-                    {% endif %}
-
-                    <!-- Username/Email -->
-                    <div class="form-group">
-                        <label for="username" class="form-label">
-                            <i class="fas fa-user me-2"></i>Foydalanuvchi nomi yoki Email
-                        </label>
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="fas fa-at"></i>
-                            </span>
-                            {{ form.username|add_class:"form-control"|attr:"placeholder:username yoki email@example.com" }}
+                <!-- Qo'shimcha ma'lumot -->
+                <div class="auth-additional">
+                    <div class="card info-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                Xavfsizlik maslahatlari
+                            </h5>
+                            <ul class="security-tips">
+                                <li>Parolingizni hech kimga bermang</li>
+                                <li>Har safar saytdan chiqing</li>
+                                <li>Shubhali havolalarga bosmang</li>
+                            </ul>
                         </div>
-                        {% if form.username.errors %}
-                        <div class="invalid-feedback d-block">
-                            {{ form.username.errors|first }}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Parol -->
-                    <div class="form-group">
-                        <label for="password" class="form-label">
-                            <i class="fas fa-lock me-2"></i>Parol
-                        </label>
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="fas fa-key"></i>
-                            </span>
-                            {{ form.password|add_class:"form-control"|attr:"placeholder:********"|attr:"id:password" }}
-                            <button type="button" class="input-group-text toggle-password">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        {% if form.password.errors %}
-                        <div class="invalid-feedback d-block">
-                            {{ form.password.errors|first }}
-                        </div>
-                        {% endif %}
-                        <div class="form-text">
-                            <a href="{% url 'users:password_reset' %}" class="text-decoration-none">
-                                <i class="fas fa-key me-1"></i>Parolni unutdingizmi?
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Esda qolish -->
-                    <div class="form-check mb-4">
-                        {{ form.remember_me|add_class:"form-check-input" }}
-                        <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">
-                            Meni eslab qol
-                        </label>
-                    </div>
-
-                    <!-- Submit tugmasi -->
-                    <button type="submit" class="btn btn-primary auth-btn w-100">
-                        <i class="fas fa-sign-in-alt me-2"></i>
-                        Kirish
-                    </button>
-
-                    <!-- Ajratuvchi -->
-                    <div class="auth-divider">
-                        <span>yoki</span>
-                    </div>
-
-                    <!-- Social login -->
-                    <div class="social-login">
-                        <p class="text-center mb-3">Ijtimoiy tarmoqlar orqali kirish:</p>
-                        <div class="social-buttons">
-                            <a href="#" class="btn btn-social google">
-                                <i class="fab fa-google me-2"></i>Google
-                            </a>
-                            <a href="#" class="btn btn-social telegram">
-                                <i class="fab fa-telegram me-2"></i>Telegram
-                            </a>
-                            <a href="#" class="btn btn-social facebook">
-                                <i class="fab fa-facebook me-2"></i>Facebook
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Ro'yxatdan o'tish havolasi -->
-                    <div class="auth-footer text-center mt-4">
-                        <p class="mb-0">
-                            Hisobingiz yo'qmi? 
-                            <a href="{% url 'users:register' %}" class="auth-link">
-                                Ro'yxatdan o'ting
-                            </a>
-                        </p>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Qo'shimcha ma'lumot -->
-            <div class="auth-additional">
-                <div class="card info-card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fas fa-shield-alt me-2"></i>
-                            Xavfsizlik maslahatlari
-                        </h5>
-                        <ul class="security-tips">
-                            <li>Parolingizni hech kimga bermang</li>
-                            <li>Har safar saytdan chiqing</li>
-                            <li>Shubhali havolalarga bosmang</li>
-                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
-
 {% block extra_js %}
-<script src="{% static 'js/users/auth.js' %}"></script>
-<script>
+    <script src="{% static 'js/users/auth.js' %}"></script>
+    <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Parolni ko'rsatish/yashirish
     const togglePassword = document.querySelector('.toggle-password');
@@ -208,5 +186,5 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-</script>
+    </script>
 {% endblock %}

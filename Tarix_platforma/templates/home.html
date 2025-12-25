@@ -1,251 +1,247 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block title %}Bosh sahifa | Tarix Platformasi{% endblock %}
-
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
-
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="hero-title">Tarixni O'rganing, <span class="highlight">Bilimingizni</span> Sinang</h1>
-                <p class="hero-subtitle">
-                    Jahon va O'zbekiston tarixini interaktiv usulda o'rganing, 
-                    mavzular bo'yicha testlar yeching va progressingizni kuzating.
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">
+                        Tarixni O'rganing, <span class="highlight">Bilimingizni</span> Sinang
+                    </h1>
+                    <p class="hero-subtitle">
+                        Jahon va O'zbekiston tarixini interaktiv usulda o'rganing,
+                        mavzular bo'yicha testlar yeching va progressingizni kuzating.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="{% url 'history:world_history' %}"
+                           class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-globe-americas me-2"></i>Jahon Tarixi
+                        </a>
+                        <a href="{% url 'testsystem:quiz_list' %}"
+                           class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-play-circle me-2"></i>Testlarni Boshlash
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <img src="{% static 'images/hero-history.png' %}"
+                             alt="Tarix platformasi"
+                             class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <h3 class="stat-number">150+</h3>
+                        <p class="stat-label">Tarixiy Mavzu</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <h3 class="stat-number">500+</h3>
+                        <p class="stat-label">Test Savoli</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <h3 class="stat-number">1000+</h3>
+                        <p class="stat-label">Foydalanuvchi</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <h3 class="stat-number">24/7</h3>
+                        <p class="stat-label">Ochiq Platforma</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Categories Section -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Tarix Bo'limlari</h2>
+                <p class="section-subtitle">Qiziqarli tarixiy davrlarni o'rganing</p>
+            </div>
+            <div class="row">
+                <!-- World History -->
+                <div class="col-lg-6 mb-4">
+                    <div class="category-card world-history">
+                        <div class="category-icon">
+                            <i class="fas fa-globe-europe"></i>
+                        </div>
+                        <h3 class="category-title">Jahon Tarixi</h3>
+                        <p class="category-description">
+                            Qadimgi tsivilizatsiyalardan zamonaviy davrgacha bo'lgan
+                            jahon tarixining muhim voqea va shaxslari.
+                        </p>
+                        <div class="topics-list">
+                            <span class="topic-badge">Qadimgi Misr</span>
+                            <span class="topic-badge">Qadimgi Rim</span>
+                            <span class="topic-badge">O'rta Asrlar</span>
+                            <span class="topic-badge">Uyg'onish Davri</span>
+                        </div>
+                        <a href="{% url 'history:world_history' %}" class="btn btn-category">
+                            O'rganish <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Uzbekistan History -->
+                <div class="col-lg-6 mb-4">
+                    <div class="category-card uzbekistan-history">
+                        <div class="category-icon">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <h3 class="category-title">O'zbekiston Tarixi</h3>
+                        <p class="category-description">
+                            Movarounnahr tarixi, Amir Temur va Temuriylar,
+                            O'zbek xonlari va mustaqillik davri.
+                        </p>
+                        <div class="topics-list">
+                            <span class="topic-badge">Movarounnahr</span>
+                            <span class="topic-badge">Temuriylar</span>
+                            <span class="topic-badge">Xiva Xonligi</span>
+                            <span class="topic-badge">Mustaqillik</span>
+                        </div>
+                        <a href="{% url 'history:uzbekistan_history' %}"
+                           class="btn btn-category">
+                            O'rganish <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Featured Quizzes -->
+    <section class="quizzes-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Mashhur Testlar</h2>
+                <p class="section-subtitle">Bilimingizni sinab ko'ring</p>
+            </div>
+            <div class="row">
+                {% for quiz in featured_quizzes|slice:":3" %}
+                    <div class="col-md-4 mb-4">
+                        <div class="quiz-card">
+                            <div class="quiz-header">
+                                <span class="quiz-difficulty {{ quiz.difficulty }}">{{ quiz.get_difficulty_display }}</span>
+                                <span class="quiz-questions"><i class="fas fa-question me-1"></i>{{ quiz.question_count }}</span>
+                            </div>
+                            <h4 class="quiz-title">{{ quiz.title }}</h4>
+                            <p class="quiz-description">{{ quiz.description|truncatewords:20 }}</p>
+                            <div class="quiz-meta">
+                                <span class="quiz-topic"><i class="fas fa-bookmark me-1"></i>{{ quiz.topic.title }}</span>
+                                <span class="quiz-time"><i class="fas fa-clock me-1"></i>{{ quiz.time_limit }} daqiqa</span>
+                            </div>
+                            <a href="{% url 'testsystem:quiz_detail' quiz.id %}"
+                               class="btn btn-quiz">
+                                <i class="fas fa-play me-2"></i>Testni Boshlash
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info">Hozircha testlar mavjud emas. Tez orada qo'shiladi.</div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-4">
+                <a href="{% url 'testsystem:quiz_list' %}" class="btn btn-view-all">
+                    Barcha Testlarni Ko'rish <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Platformadan Qanday Foydalanish?</h2>
+                <p class="section-subtitle">3 oddiy qadamda boshlang</p>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4 class="step-title">Ro'yxatdan o'ting</h4>
+                        <p class="step-description">
+                            Tezkor ro'yxatdan o'tish orqali platformaning barcha
+                            imkoniyatlaridan foydalaning.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4 class="step-title">Mavzuni o'rganing</h4>
+                        <p class="step-description">
+                            Qiziqqan tarixiy mavzuni tanlang va batafsil materiallarni
+                            o'qing.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4 class="step-title">Test yeching</h4>
+                        <p class="step-description">
+                            Bilimingizni mustahkamlang va testlar orqali o'z
+                            natijalaringizni ko'ring.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Hoziroq Boshlang!</h2>
+                <p class="cta-text">
+                    Tarixni o'rganish sari birinchi qadamni hoziroq tashlang.
+                    Platformamizda siz uchun 100+ bepul darslik va testlar tayyor.
                 </p>
-                <div class="hero-buttons">
-                    <a href="{% url 'history:world_history' %}" class="btn btn-primary btn-lg me-3">
-                        <i class="fas fa-globe-americas me-2"></i>Jahon Tarixi
-                    </a>
-                    <a href="{% url 'testsystem:quiz_list' %}" class="btn btn-outline-primary btn-lg">
-                        <i class="fas fa-play-circle me-2"></i>Testlarni Boshlash
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="hero-image">
-                    <img src="{% static 'images/hero-history.png' %}" alt="Tarix platformasi" class="img-fluid">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Stats Section -->
-<section class="stats-section">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-md-3 col-6">
-                <div class="stat-item">
-                    <h3 class="stat-number">150+</h3>
-                    <p class="stat-label">Tarixiy Mavzu</p>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-item">
-                    <h3 class="stat-number">500+</h3>
-                    <p class="stat-label">Test Savoli</p>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-item">
-                    <h3 class="stat-number">1000+</h3>
-                    <p class="stat-label">Foydalanuvchi</p>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-item">
-                    <h3 class="stat-number">24/7</h3>
-                    <p class="stat-label">Ochiq Platforma</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Categories Section -->
-<section class="categories-section">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Tarix Bo'limlari</h2>
-            <p class="section-subtitle">Qiziqarli tarixiy davrlarni o'rganing</p>
-        </div>
-        
-        <div class="row">
-            <!-- World History -->
-            <div class="col-lg-6 mb-4">
-                <div class="category-card world-history">
-                    <div class="category-icon">
-                        <i class="fas fa-globe-europe"></i>
+                {% if not user.is_authenticated %}
+                    <div class="cta-buttons">
+                        <a href="{% url 'users:register' %}"
+                           class="btn btn-cta-primary btn-lg me-3">
+                            <i class="fas fa-user-plus me-2"></i>Ro'yxatdan o'tish
+                        </a>
+                        <a href="{% url 'history:world_history' %}"
+                           class="btn btn-cta-outline btn-lg">
+                            <i class="fas fa-eye me-2"></i>Mavzularni Ko'rish
+                        </a>
                     </div>
-                    <h3 class="category-title">Jahon Tarixi</h3>
-                    <p class="category-description">
-                        Qadimgi tsivilizatsiyalardan zamonaviy davrgacha bo'lgan 
-                        jahon tarixining muhim voqea va shaxslari.
-                    </p>
-                    <div class="topics-list">
-                        <span class="topic-badge">Qadimgi Misr</span>
-                        <span class="topic-badge">Qadimgi Rim</span>
-                        <span class="topic-badge">O'rta Asrlar</span>
-                        <span class="topic-badge">Uyg'onish Davri</span>
+                {% else %}
+                    <div class="cta-buttons">
+                        <a href="{% url 'progress:dashboard' %}"
+                           class="btn btn-cta-primary btn-lg me-3">
+                            <i class="fas fa-tachometer-alt me-2"></i>Progressni Ko'rish
+                        </a>
+                        <a href="{% url 'testsystem:quiz_list' %}"
+                           class="btn btn-cta-outline btn-lg">
+                            <i class="fas fa-play-circle me-2"></i>Test Boshlash
+                        </a>
                     </div>
-                    <a href="{% url 'history:world_history' %}" class="btn btn-category">
-                        O'rganish <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Uzbekistan History -->
-            <div class="col-lg-6 mb-4">
-                <div class="category-card uzbekistan-history">
-                    <div class="category-icon">
-                        <i class="fas fa-flag"></i>
-                    </div>
-                    <h3 class="category-title">O'zbekiston Tarixi</h3>
-                    <p class="category-description">
-                        Movarounnahr tarixi, Amir Temur va Temuriylar, 
-                        O'zbek xonlari va mustaqillik davri.
-                    </p>
-                    <div class="topics-list">
-                        <span class="topic-badge">Movarounnahr</span>
-                        <span class="topic-badge">Temuriylar</span>
-                        <span class="topic-badge">Xiva Xonligi</span>
-                        <span class="topic-badge">Mustaqillik</span>
-                    </div>
-                    <a href="{% url 'history:uzbekistan_history' %}" class="btn btn-category">
-                        O'rganish <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
-                </div>
+                {% endif %}
             </div>
         </div>
-    </div>
-</section>
-
-<!-- Featured Quizzes -->
-<section class="quizzes-section">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Mashhur Testlar</h2>
-            <p class="section-subtitle">Bilimingizni sinab ko'ring</p>
-        </div>
-        
-        <div class="row">
-            {% for quiz in featured_quizzes|slice:":3" %}
-            <div class="col-md-4 mb-4">
-                <div class="quiz-card">
-                    <div class="quiz-header">
-                        <span class="quiz-difficulty {{ quiz.difficulty }}">{{ quiz.get_difficulty_display }}</span>
-                        <span class="quiz-questions"><i class="fas fa-question me-1"></i>{{ quiz.question_count }}</span>
-                    </div>
-                    <h4 class="quiz-title">{{ quiz.title }}</h4>
-                    <p class="quiz-description">{{ quiz.description|truncatewords:20 }}</p>
-                    <div class="quiz-meta">
-                        <span class="quiz-topic"><i class="fas fa-bookmark me-1"></i>{{ quiz.topic.title }}</span>
-                        <span class="quiz-time"><i class="fas fa-clock me-1"></i>{{ quiz.time_limit }} daqiqa</span>
-                    </div>
-                    <a href="{% url 'testsystem:quiz_detail' quiz.id %}" class="btn btn-quiz">
-                        <i class="fas fa-play me-2"></i>Testni Boshlash
-                    </a>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info">
-                    Hozircha testlar mavjud emas. Tez orada qo'shiladi.
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        
-        <div class="text-center mt-4">
-            <a href="{% url 'testsystem:quiz_list' %}" class="btn btn-view-all">
-                Barcha Testlarni Ko'rish <i class="fas fa-arrow-right ms-2"></i>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- How It Works -->
-<section class="how-it-works">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Platformadan Qanday Foydalanish?</h2>
-            <p class="section-subtitle">3 oddiy qadamda boshlang</p>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <h4 class="step-title">Ro'yxatdan o'ting</h4>
-                    <p class="step-description">
-                        Tezkor ro'yxatdan o'tish orqali platformaning barcha 
-                        imkoniyatlaridan foydalaning.
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <h4 class="step-title">Mavzuni o'rganing</h4>
-                    <p class="step-description">
-                        Qiziqqan tarixiy mavzuni tanlang va batafsil materiallarni 
-                        o'qing.
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <h4 class="step-title">Test yeching</h4>
-                    <p class="step-description">
-                        Bilimingizni mustahkamlang va testlar orqali o'z 
-                        natijalaringizni ko'ring.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CTA Section -->
-<section class="cta-section">
-    <div class="container">
-        <div class="cta-content">
-            <h2 class="cta-title">Hoziroq Boshlang!</h2>
-            <p class="cta-text">
-                Tarixni o'rganish sari birinchi qadamni hoziroq tashlang. 
-                Platformamizda siz uchun 100+ bepul darslik va testlar tayyor.
-            </p>
-            {% if not user.is_authenticated %}
-            <div class="cta-buttons">
-                <a href="{% url 'users:register' %}" class="btn btn-cta-primary btn-lg me-3">
-                    <i class="fas fa-user-plus me-2"></i>Ro'yxatdan o'tish
-                </a>
-                <a href="{% url 'history:world_history' %}" class="btn btn-cta-outline btn-lg">
-                    <i class="fas fa-eye me-2"></i>Mavzularni Ko'rish
-                </a>
-            </div>
-            {% else %}
-            <div class="cta-buttons">
-                <a href="{% url 'progress:dashboard' %}" class="btn btn-cta-primary btn-lg me-3">
-                    <i class="fas fa-tachometer-alt me-2"></i>Progressni Ko'rish
-                </a>
-                <a href="{% url 'testsystem:quiz_list' %}" class="btn btn-cta-outline btn-lg">
-                    <i class="fas fa-play-circle me-2"></i>Test Boshlash
-                </a>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</section>
+    </section>
 {% endblock %}
-
 {% block extra_js %}
-<script src="{% static 'js/home.js' %}"></script>
+    <script src="{% static 'js/home.js' %}"></script>
 {% endblock %}

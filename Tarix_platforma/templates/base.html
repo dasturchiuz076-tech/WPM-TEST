@@ -1,170 +1,181 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Tarix Platformasi | Jahon va O'zbekiston tarixi{% endblock %}</title>
-    
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Roboto+Slab:wght@300;400;500&display=swap" rel="stylesheet">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    {% block extra_css %}{% endblock %}
-    
-    {% block extra_head %}{% endblock %}
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark main-navbar fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-landmark me-2"></i>
-                <span class="brand-text">Tarix Platformasi</span>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'history:world_history' %}">
-                            <i class="fas fa-globe-americas me-1"></i>
-                            Jahon Tarixi
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'history:uzbekistan_history' %}">
-                            <i class="fas fa-flag-uz me-1"></i>
-                            O'zbekiston Tarixi
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'testsystem:quiz_list' %}">
-                            <i class="fas fa-question-circle me-1"></i>
-                            Testlar
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'progress:dashboard' %}">
-                            <i class="fas fa-chart-line me-1"></i>
-                            Progress
-                        </a>
-                    </li>
-                </ul>
-                
-                <div class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <div class="dropdown">
-                            <button class="btn btn-user-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle me-1"></i>
-                                {{ user.username }}
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'users:profile' %}">
-                                    <i class="fas fa-user me-2"></i>Profil
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="{% url 'users:logout' %}">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Chiqish
-                                </a></li>
-                            </ul>
-                        </div>
-                    {% else %}
-                        <a class="btn btn-login me-2" href="{% url 'users:login' %}">
-                            <i class="fas fa-sign-in-alt me-1"></i>Kirish
-                        </a>
-                        <a class="btn btn-register" href="{% url 'users:register' %}">
-                            <i class="fas fa-user-plus me-1"></i>Ro'yxatdan o'tish
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Messages -->
-    {% if messages %}
-    <div class="container mt-4">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- Main Content -->
-    <main>
-        {% block content %}
-        <!-- Content will be injected here -->
-        {% endblock %}
-    </main>
-
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 footer-section">
-                    <h5 class="footer-heading">
-                        <i class="fas fa-landmark me-2"></i>
-                        Tarix Platformasi
-                    </h5>
-                    <p class="footer-text">
-                        Jahon va O'zbekiston tarixini o'rganish, testlar yechish 
-                        va bilimingizni oshirish uchun platforma.
-                    </p>
-                </div>
-                
-                <div class="col-md-4 footer-section">
-                    <h5 class="footer-heading">Tezkor havolalar</h5>
-                    <ul class="footer-links">
-                        <li><a href="{% url 'history:world_history' %}">Jahon tarixi</a></li>
-                        <li><a href="{% url 'history:uzbekistan_history' %}">O'zbekiston tarixi</a></li>
-                        <li><a href="{% url 'testsystem:quiz_list' %}">Testlar</a></li>
-                        <li><a href="{% url 'progress:dashboard' %}">Progress</a></li>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block title %}Tarix Platformasi | Jahon va O'zbekiston tarixi{% endblock %}
+        </title>
+        <!-- Bootstrap 5 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+              rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Roboto+Slab:wght@300;400;500&display=swap"
+              rel="stylesheet">
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        {% block extra_css %}{% endblock %}
+        {% block extra_head %}{% endblock %}
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark main-navbar fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <i class="fas fa-landmark me-2"></i>
+                    <span class="brand-text">Tarix Platformasi</span>
+                </a>
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'history:world_history' %}">
+                                <i class="fas fa-globe-americas me-1"></i>
+                                Jahon Tarixi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'history:uzbekistan_history' %}">
+                                <i class="fas fa-flag-uz me-1"></i>
+                                O'zbekiston Tarixi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'testsystem:quiz_list' %}">
+                                <i class="fas fa-question-circle me-1"></i>
+                                Testlar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'progress:dashboard' %}">
+                                <i class="fas fa-chart-line me-1"></i>
+                                Progress
+                            </a>
+                        </li>
                     </ul>
-                </div>
-                
-                <div class="col-md-4 footer-section">
-                    <h5 class="footer-heading">Aloqa</h5>
-                    <div class="footer-contact">
-                        <p><i class="fas fa-envelope me-2"></i> info@tarixplatforma.uz</p>
-                        <p><i class="fas fa-phone me-2"></i> +998 90 123 45 67</p>
-                    </div>
-                    <div class="footer-social">
-                        <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                    <div class="navbar-nav">
+                        {% if user.is_authenticated %}
+                            <div class="dropdown">
+                                <button class="btn btn-user-dropdown dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-circle me-1"></i>
+                                    {{ user.username }}
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'users:profile' %}">
+                                            <i class="fas fa-user me-2"></i>Profil
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="{% url 'users:logout' %}">
+                                            <i class="fas fa-sign-out-alt me-2"></i>Chiqish
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <a class="btn btn-login me-2" href="{% url 'users:login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Kirish
+                            </a>
+                            <a class="btn btn-register" href="{% url 'users:register' %}">
+                                <i class="fas fa-user-plus me-1"></i>Ro'yxatdan o'tish
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            
-            <hr class="footer-divider">
-            
-            <div class="footer-bottom">
-                <p class="copyright">
-                    &copy; {% now "Y" %} Tarix Platformasi. Barcha huquqlar himoyalangan.
-                </p>
+        </nav>
+        <!-- Messages -->
+        {% if messages %}
+            <div class="container mt-4">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+                         role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
             </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery (optional) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Custom JS -->
-    <script src="{% static 'js/main.js' %}"></script>
-    
-    {% block extra_js %}{% endblock %}
-</body>
+        {% endif %}
+        <!-- Main Content -->
+        <main>
+            {% block content %}<!-- Content will be injected here -->{% endblock %}
+        </main>
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 footer-section">
+                        <h5 class="footer-heading">
+                            <i class="fas fa-landmark me-2"></i>
+                            Tarix Platformasi
+                        </h5>
+                        <p class="footer-text">
+                            Jahon va O'zbekiston tarixini o'rganish, testlar yechish
+                            va bilimingizni oshirish uchun platforma.
+                        </p>
+                    </div>
+                    <div class="col-md-4 footer-section">
+                        <h5 class="footer-heading">Tezkor havolalar</h5>
+                        <ul class="footer-links">
+                            <li>
+                                <a href="{% url 'history:world_history' %}">Jahon tarixi</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'history:uzbekistan_history' %}">O'zbekiston tarixi</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'testsystem:quiz_list' %}">Testlar</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'progress:dashboard' %}">Progress</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 footer-section">
+                        <h5 class="footer-heading">Aloqa</h5>
+                        <div class="footer-contact">
+                            <p>
+                                <i class="fas fa-envelope me-2"></i> info@tarixplatforma.uz
+                            </p>
+                            <p>
+                                <i class="fas fa-phone me-2"></i> +998 90 123 45 67
+                            </p>
+                        </div>
+                        <div class="footer-social">
+                            <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <hr class="footer-divider">
+                <div class="footer-bottom">
+                    <p class="copyright">&copy; {% now "Y" %} Tarix Platformasi. Barcha huquqlar himoyalangan.</p>
+                </div>
+            </div>
+        </footer>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- jQuery (optional) -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- Custom JS -->
+        <script src="{% static 'js/main.js' %}"></script>
+        {% block extra_js %}{% endblock %}
+    </body>
 </html>
