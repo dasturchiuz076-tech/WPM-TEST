@@ -1,0 +1,774 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Mening Profilim | {{ user.get_full_name|default:user.username }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Profil header -->
+    <div class="profile-header">
+        <div class="container">
+            <div class="profile-header-content">
+                <!-- Avatar va asosiy ma'lumotlar -->
+                <div class="profile-avatar-section">
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar">
+                            {% if user.profile.avatar %}
+                                <img src="{{ user.profile.avatar.url }}" alt="{{ user.get_full_name|default:user.username }}" 
+                                     id="avatarPreview" class="avatar-image">
+                            {% else %}
+                                <div class="avatar-placeholder" id="avatarPreview">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            {% endif %}
+                            <div class="avatar-overlay" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                                <i class="fas fa-camera"></i>
+                                <span>O'zgartirish</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-avatar-edit" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="profile-info">
+                        <h1 class="profile-name">{{ user.get_full_name|default:user.username }}</h1>
+                        <p class="profile-username">@{{ user.username }}</p>
+                        
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">{{ completed_topics }}</span>
+                                <span class="stat-label">O'rgangan mavzular</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ average_score }}%</span>
+                                <span class="stat-label">O'rtacha natija</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ user.date_joined|date:"d.m.Y" }}</span>
+                                <span class="stat-label">A'zo bo'lgan sana</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profil navigatsiyasi -->
+                <ul class="profile-nav nav nav-tabs" id="profileTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" 
+                                data-bs-target="#personal" type="button">
+                            <i class="fas fa-user-circle me-2"></i>Shaxsiy ma'lumotlar
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="security-tab" data-bs-toggle="tab" 
+                                data-bs-target="#security" type="button">
+                            <i class="fas fa-shield-alt me-2"></i>Xavfsizlik
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="progress-tab" data-bs-toggle="tab" 
+                                data-bs-target="#progress" type="button">
+                            <i class="fas fa-chart-line me-2"></i>Progress
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="settings-tab" data-bs-toggle="tab" 
+                                data-bs-target="#settings" type="button">
+                            <i class="fas fa-cog me-2"></i>Sozlamalar
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profil kontenti -->
+    <div class="profile-content">
+        <div class="container">
+            <div class="tab-content" id="profileTabContent">
+                <!-- Shaxsiy ma'lumotlar tab -->
+                <div class="tab-pane fade show active" id="personal" role="tabpanel">
+                    <div class="row">
+                        <!-- Chap tomon: Forma -->
+                        <div class="col-lg-8">
+                            <div class="card profile-card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-user-edit me-2"></i>Profil ma'lumotlarini tahrirlash
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <form method="POST" action="{% url 'users:profile_update' %}" 
+                                          enctype="multipart/form-data" id="profileForm">
+                                        {% csrf_token %}
+                                        
+                                        <div class="row">
+                                            <!-- Ism -->
+                                            <div class="col-md-6 mb-3">
+                                                <label for="first_name" class="form-label">Ism</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-user"></i>
+                                                    </span>
+                                                    <input type="text" class="form-control" id="first_name" 
+                                                           name="first_name" value="{{ user.first_name }}">
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Familiya -->
+                                            <div class="col-md-6 mb-3">
+                                                <label for="last_name" class="form-label">Familiya</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-user"></i>
+                                                    </span>
+                                                    <input type="text" class="form-control" id="last_name" 
+                                                           name="last_name" value="{{ user.last_name }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Email -->
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email manzil</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-envelope"></i>
+                                                </span>
+                                                <input type="email" class="form-control" id="email" 
+                                                       name="email" value="{{ user.email }}">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Tug'ilgan sana -->
+                                        <div class="mb-3">
+                                            <label for="birth_date" class="form-label">Tug'ilgan sana</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-birthday-cake"></i>
+                                                </span>
+                                                <input type="date" class="form-control" id="birth_date" 
+                                                       name="birth_date" value="{{ user.profile.birth_date|date:'Y-m-d' }}">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Jins -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Jins</label>
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="gender" 
+                                                           id="gender_male" value="M" {% if user.profile.gender == 'M' %}checked{% endif %}>
+                                                    <label class="form-check-label" for="gender_male">
+                                                        Erkak
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="gender" 
+                                                           id="gender_female" value="F" {% if user.profile.gender == 'F' %}checked{% endif %}>
+                                                    <label class="form-check-label" for="gender_female">
+                                                        Ayol
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Shahar -->
+                                        <div class="mb-3">
+                                            <label for="city" class="form-label">Shahar</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-city"></i>
+                                                </span>
+                                                <input type="text" class="form-control" id="city" 
+                                                       name="city" value="{{ user.profile.city }}">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Bio -->
+                                        <div class="mb-3">
+                                            <label for="bio" class="form-label">O'zim haqimda</label>
+                                            <textarea class="form-control" id="bio" name="bio" 
+                                                      rows="4" placeholder="O'zingiz haqingizda qisqacha...">{{ user.profile.bio }}</textarea>
+                                            <div class="form-text">
+                                                Maksimum 500 belgi
+                                                <span class="float-end" id="bioCounter">0/500</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Saqlash tugmasi -->
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-2"></i>O'zgarishlarni saqlash
+                                            </button>
+                                            <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">
+                                                Bekor qilish
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- O'ng tomon: Statistikalar -->
+                        <div class="col-lg-4">
+                            <!-- Faollik statistikasi -->
+                            <div class="card stats-card mb-4">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-chart-bar me-2"></i>Faollik statistikasi
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="activity-stats">
+                                        <div class="activity-item">
+                                            <div class="activity-icon success">
+                                                <i class="fas fa-check-circle"></i>
+                                            </div>
+                                            <div class="activity-info">
+                                                <div class="activity-value">{{ completed_quizzes }}</div>
+                                                <div class="activity-label">Bajarilgan testlar</div>
+                                            </div>
+                                        </div>
+                                        <div class="activity-item">
+                                            <div class="activity-icon primary">
+                                                <i class="fas fa-book"></i>
+                                            </div>
+                                            <div class="activity-info">
+                                                <div class="activity-value">{{ completed_topics }}</div>
+                                                <div class="activity-label">O'rgangan mavzular</div>
+                                            </div>
+                                        </div>
+                                        <div class="activity-item">
+                                            <div class="activity-icon warning">
+                                                <i class="fas fa-clock"></i>
+                                            </div>
+                                            <div class="activity-info">
+                                                <div class="activity-value">{{ study_hours|floatformat:1 }}</div>
+                                                <div class="activity-label">O'qigan soatlar</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- So'nggi faollik -->
+                            <div class="card activity-card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-history me-2"></i>So'nggi faollik
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="activity-feed">
+                                        {% for activity in recent_activities %}
+                                        <div class="activity-item">
+                                            <div class="activity-icon">
+                                                <i class="fas fa-{{ activity.icon }}"></i>
+                                            </div>
+                                            <div class="activity-content">
+                                                <div class="activity-text">{{ activity.text }}</div>
+                                                <div class="activity-time">{{ activity.time|timesince }} oldin</div>
+                                            </div>
+                                        </div>
+                                        {% empty %}
+                                        <div class="text-center text-muted py-3">
+                                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                                            <p>Hozircha faollik yo'q</p>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Xavfsizlik tab -->
+                <div class="tab-pane fade" id="security" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <!-- Parolni o'zgartirish -->
+                            <div class="card security-card mb-4">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-key me-2"></i>Parolni o'zgartirish
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <form id="passwordForm">
+                                        <div class="mb-3">
+                                            <label for="current_password" class="form-label">Joriy parol</label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control" id="current_password">
+                                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="new_password" class="form-label">Yangi parol</label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control" id="new_password">
+                                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="confirm_password" class="form-label">Yangi parolni tasdiqlash</label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control" id="confirm_password">
+                                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-sync-alt me-2"></i>Parolni yangilash
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Ikki faktorli autentifikatsiya -->
+                            <div class="card security-card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-mobile-alt me-2"></i>Ikki faktorli autentifikatsiya
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h6 class="mb-1">Telegram orqali</h6>
+                                            <p class="text-muted mb-0">Xavfsizlikni oshirish uchun</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="twoFactorToggle">
+                                            <label class="form-check-label" for="twoFactorToggle"></label>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Ikki faktorli autentifikatsiya yoqilganda, har safar kirishda 
+                                        Telegram orqali kod yuboriladi.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <!-- Faol sessiyalar -->
+                            <div class="card security-card mb-4">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-laptop me-2"></i>Faol sessiyalar
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="sessions-list">
+                                        <div class="session-item active">
+                                            <div class="session-icon">
+                                                <i class="fas fa-desktop"></i>
+                                            </div>
+                                            <div class="session-info">
+                                                <div class="session-device">Windows 10 • Chrome</div>
+                                                <div class="session-location">Toshkent, O'zbekistan</div>
+                                                <div class="session-time">Hozir faol</div>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-sign-out-alt"></i>
+                                            </button>
+                                        </div>
+                                        {% for session in other_sessions %}
+                                        <div class="session-item">
+                                            <div class="session-icon">
+                                                <i class="fas fa-mobile-alt"></i>
+                                            </div>
+                                            <div class="session-info">
+                                                <div class="session-device">{{ session.device }}</div>
+                                                <div class="session-location">{{ session.location }}</div>
+                                                <div class="session-time">{{ session.last_active|timesince }} oldin</div>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-sign-out-alt"></i>
+                                            </button>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <button class="btn btn-outline-secondary btn-sm" id="logoutAll">
+                                            <i class="fas fa-sign-out-alt me-1"></i>Barcha qurilmalardan chiqish
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Hisobni o'chirish -->
+                            <div class="card security-card border-danger">
+                                <div class="card-header bg-danger text-white">
+                                    <h4 class="card-title mb-0">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>Xavfli sozlamalar
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="text-danger">Hisobni o'chirish</h6>
+                                    <p class="text-muted small">
+                                        Hisobingizni o'chirishni tasdiqlasangiz, barcha ma'lumotlaringiz 
+                                        butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi.
+                                    </p>
+                                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                                        <i class="fas fa-trash-alt me-2"></i>Hisobni o'chirish
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progress tab -->
+                <div class="tab-pane fade" id="progress" role="tabpanel">
+                    <!-- Progress kontenti bu yerga keladi -->
+                    <div class="text-center py-5">
+                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                        <h4>Progress statistikasi</h4>
+                        <p class="text-muted">Bu bo'lim hozircha ishlab chiqilmoqda...</p>
+                        <a href="{% url 'progress:dashboard' %}" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt me-2"></i>To'liq progressni ko'rish
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Sozlamalar tab -->
+                <div class="tab-pane fade" id="settings" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <!-- Bildirishnomalar -->
+                            <div class="card settings-card mb-4">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-bell me-2"></i>Bildirishnomalar
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="settings-item">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                            <label class="form-check-label" for="emailNotifications">
+                                                Email orqali bildirishnomalar
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="settings-item">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="quizReminders" checked>
+                                            <label class="form-check-label" for="quizReminders">
+                                                Test eslatmalari
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="settings-item">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="newsUpdates">
+                                            <label class="form-check-label" for="newsUpdates">
+                                                Yangiliklar va yangilanishlar
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Til sozlamalari -->
+                            <div class="card settings-card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-language me-2"></i>Til sozlamalari
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="languageSelect" class="form-label">Platforma tili</label>
+                                        <select class="form-select" id="languageSelect">
+                                            <option value="uz" selected>O'zbekcha</option>
+                                            <option value="ru">Русский</option>
+                                            <option value="en">English</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="timezoneSelect" class="form-label">Vaqt zonasi</label>
+                                        <select class="form-select" id="timezoneSelect">
+                                            <option value="Asia/Tashkent" selected>Toshkent (UTC+5)</option>
+                                            <option value="Asia/Samarkand">Samarqand (UTC+5)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <!-- Ko'rinish sozlamalari -->
+                            <div class="card settings-card mb-4">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-palette me-2"></i>Ko'rinish sozlamalari
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Mavzu</label>
+                                        <div class="theme-selector">
+                                            <div class="theme-option active" data-theme="light">
+                                                <div class="theme-preview light">
+                                                    <div class="theme-header"></div>
+                                                    <div class="theme-body"></div>
+                                                </div>
+                                                <span>Yorqin</span>
+                                            </div>
+                                            <div class="theme-option" data-theme="dark">
+                                                <div class="theme-preview dark">
+                                                    <div class="theme-header"></div>
+                                                    <div class="theme-body"></div>
+                                                </div>
+                                                <span>Qorong'i</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Font o'lchami</label>
+                                        <div class="font-size-control">
+                                            <button class="btn btn-sm btn-outline-secondary" id="decreaseFont">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <span class="font-size-value" id="fontSizeValue">16px</span>
+                                            <button class="btn btn-sm btn-outline-secondary" id="increaseFont">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Eksport ma'lumotlari -->
+                            <div class="card settings-card">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-download me-2"></i>Ma'lumotlarni eksport qilish
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">
+                                        Barcha shaxsiy ma'lumotlaringizni yuklab olishingiz mumkin.
+                                    </p>
+                                    <button class="btn btn-outline-primary mb-2">
+                                        <i class="fas fa-file-pdf me-2"></i>PDF formatda
+                                    </button>
+                                    <button class="btn btn-outline-primary">
+                                        <i class="fas fa-file-excel me-2"></i>Excel formatda
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Avatar modal -->
+<div class="modal fade" id="avatarModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Profil rasmini o'zgartirish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="avatar-upload text-center">
+                    <div class="avatar-preview mb-3">
+                        <div id="imagePreview"></div>
+                    </div>
+                    <input type="file" id="avatarInput" accept="image/*" class="d-none">
+                    <button class="btn btn-primary mb-2" id="uploadAvatar">
+                        <i class="fas fa-upload me-2"></i>Rasm yuklash
+                    </button>
+                    <p class="text-muted small mb-3">Rasm formati: JPG, PNG, GIF. Maksimal hajm: 5MB</p>
+                    
+                    <div class="avatar-templates">
+                        <h6>Standart avatar tanlash:</h6>
+                        <div class="template-grid">
+                            {% for i in "123456"|make_list %}
+                            <div class="template-avatar" data-template="{{ i }}">
+                                <img src="{% static 'images/avatars/avatar'|add:i|add:'.png' %}" alt="Avatar {{ i }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                <button type="button" class="btn btn-primary" id="saveAvatar">Saqlash</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete account modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Hisobni o'chirish
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+                    <h4>Hisobingizni o'chirmoqchimisiz?</h4>
+                    <p class="text-muted">
+                        Bu amalni qaytarib bo'lmaydi. Barcha ma'lumotlaringiz butunlay o'chiriladi.
+                    </p>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-exclamation-circle me-2"></i>Diqqat!</h6>
+                    <ul class="mb-0">
+                        <li>Barcha test natijalaringiz o'chiriladi</li>
+                        <li>Progress statistikangiz yo'qoladi</li>
+                        <li>Profil ma'lumotlaringiz butunlay o'chiriladi</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="confirmDelete" class="form-label">
+                        Tasdiqlash uchun <strong>"DELETE"</strong> so'zini kiriting:
+                    </label>
+                    <input type="text" class="form-control" id="confirmDelete" 
+                           placeholder="DELETE">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+                    <i class="fas fa-trash-alt me-2"></i>Hisobni o'chirish
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/profile.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Bio belgilar sonini hisoblash
+    const bioTextarea = document.getElementById('bio');
+    const bioCounter = document.getElementById('bioCounter');
+    
+    if (bioTextarea && bioCounter) {
+        bioTextarea.addEventListener('input', function() {
+            const length = this.value.length;
+            bioCounter.textContent = length + '/500';
+            
+            if (length > 500) {
+                bioCounter.classList.add('text-danger');
+            } else {
+                bioCounter.classList.remove('text-danger');
+            }
+        });
+        
+        // Boshlang'ich qiymat
+        bioTextarea.dispatchEvent(new Event('input'));
+    }
+    
+    // Parol ko'rsatish/yashirish
+    const toggleButtons = document.querySelectorAll('.toggle-password');
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+    });
+    
+    // Avatar yuklash
+    const avatarInput = document.getElementById('avatarInput');
+    const uploadAvatarBtn = document.getElementById('uploadAvatar');
+    const imagePreview = document.getElementById('imagePreview');
+    
+    if (uploadAvatarBtn && avatarInput) {
+        uploadAvatarBtn.addEventListener('click', () => avatarInput.click());
+        
+        avatarInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded-circle">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    // Hisobni o'chirish tasdiqlash
+    const confirmDelete = document.getElementById('confirmDelete');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    
+    if (confirmDelete && confirmDeleteBtn) {
+        confirmDelete.addEventListener('input', function() {
+            confirmDeleteBtn.disabled = this.value !== 'DELETE';
+        });
+    }
+    
+    // Font o'lchamini o'zgartirish
+    const decreaseFont = document.getElementById('decreaseFont');
+    const increaseFont = document.getElementById('increaseFont');
+    const fontSizeValue = document.getElementById('fontSizeValue');
+    
+    if (decreaseFont && increaseFont && fontSizeValue) {
+        let fontSize = 16;
+        
+        decreaseFont.addEventListener('click', () => {
+            if (fontSize > 12) {
+                fontSize--;
+                updateFontSize();
+            }
+        });
+        
+        increaseFont.addEventListener('click', () => {
+            if (fontSize < 24) {
+                fontSize++;
+                updateFontSize();
+            }
+        });
+        
+        function updateFontSize() {
+            fontSizeValue.textContent = fontSize + 'px';
+            document.documentElement.style.fontSize = fontSize + 'px';
+            localStorage.setItem('fontSize', fontSize);
+        }
+        
+        // Saqlangan font o'lchamini yuklash
+        const savedSize = localStorage.getItem('fontSize');
+        if (savedSize) {
+            fontSize = parseInt(savedSize);
+            updateFontSize();
+        }
+    }
+});
+</script>
+{% endblock %}

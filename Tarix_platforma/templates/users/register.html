@@ -1,0 +1,411 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Ro'yxatdan o'tish | Tarix Platformasi{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-wrapper">
+        <!-- Chap tomon: Tasvir -->
+        <div class="auth-left register-left">
+            <div class="auth-illustration">
+                <img src="{% static 'images/register-illustration.svg' %}" alt="Ro'yxatdan o'tish" class="img-fluid">
+            </div>
+            <div class="auth-info">
+                <h3 class="auth-info-title">Nima uchun a'zo bo'lish kerak?</h3>
+                <ul class="benefits-list">
+                    <li class="benefit-item">
+                        <i class="fas fa-check-circle benefit-icon"></i>
+                        <span>Barcha tarixiy mavzularga cheksiz kirish</span>
+                    </li>
+                    <li class="benefit-item">
+                        <i class="fas fa-check-circle benefit-icon"></i>
+                        <span>Shaxsiy progressni kuzatish</span>
+                    </li>
+                    <li class="benefit-item">
+                        <i class="fas fa-check-circle benefit-icon"></i>
+                        <span>Test natijalarini saqlash</span>
+                    </li>
+                    <li class="benefit-item">
+                        <i class="fas fa-check-circle benefit-icon"></i>
+                        <span>Reytingda qatnashish</span>
+                    </li>
+                    <li class="benefit-item">
+                        <i class="fas fa-check-circle benefit-icon"></i>
+                        <span>Maxsus sertifikatlar olish</span>
+                    </li>
+                </ul>
+                <div class="stats-box">
+                    <div class="stat">
+                        <h4>1,234+</h4>
+                        <p>Faol foydalanuvchi</p>
+                    </div>
+                    <div class="stat">
+                        <h4>4.8</h4>
+                        <p>Platforma reytingi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- O'ng tomon: Forma -->
+        <div class="auth-right">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-icon register-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h2 class="auth-title">Yangi Hisob Yaratish</h2>
+                    <p class="auth-subtitle">Quyidagi formani to'ldiring</p>
+                </div>
+
+                <form method="POST" action="{% url 'users:register' %}" class="auth-form" id="registerForm" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Xatoliklarni ko'rsatish -->
+                    {% if form.errors %}
+                    <div class="alert alert-danger auth-alert" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Iltimos, quyidagi xatoliklarni tuzating:
+                        <ul class="mb-0 mt-2">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- Ism va Familiya -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Ism
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-signature"></i>
+                                    </span>
+                                    {{ form.first_name|add_class:"form-control"|attr:"placeholder:Ismingiz" }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                    Familiya
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-signature"></i>
+                                    </span>
+                                    {{ form.last_name|add_class:"form-control"|attr:"placeholder:Familiyangiz" }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            <i class="fas fa-user-tag me-2"></i>Foydalanuvchi nomi
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-at"></i>
+                            </span>
+                            {{ form.username|add_class:"form-control"|attr:"placeholder:" }}
+                            <button type="button" class="input-group-text" id="checkUsername">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">
+                            <small id="usernameHelp">3-30 belgi, faqat harflar, raqamlar va _</small>
+                        </div>
+                        <div class="valid-feedback" id="usernameValid">
+                            <i class="fas fa-check-circle me-1"></i> Bu foydalanuvchi nomi mavjud emas
+                        </div>
+                        <div class="invalid-feedback" id="usernameInvalid">
+                            <i class="fas fa-times-circle me-1"></i> Bu foydalanuvchi nomi band
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">
+                            <i class="fas fa-envelope me-2"></i>Email manzil
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            {{ form.email|add_class:"form-control"|attr:"placeholder:email@example.com"|attr:"type:email" }}
+                        </div>
+                        <div class="form-text">
+                            <small>Haqiqiy email manzilingizni kiriting</small>
+                        </div>
+                    </div>
+
+                    <!-- Parol -->
+                    <div class="form-group">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Parol
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                            {{ form.password1|add_class:"form-control"|attr:"placeholder:Kamida 8 belgi"|attr:"id:password1" }}
+                            <button type="button" class="input-group-text toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength mt-2">
+                            <div class="strength-bar">
+                                <div class="strength-level" id="passwordStrength"></div>
+                            </div>
+                            <small class="strength-text" id="strengthText">Parol kuchi: kuchsiz</small>
+                        </div>
+                        <div class="password-requirements mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Parol kamida 8 belgidan iborat bo'lishi va harflar, raqamlar qatnashishi kerak.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Parolni tasdiqlash -->
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Parolni tasdiqlash
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                            {{ form.password2|add_class:"form-control"|attr:"placeholder:Parolni qayta kiriting"|attr:"id:password2" }}
+                            <button type="button" class="input-group-text toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">
+                            <small id="passwordMatch"></small>
+                        </div>
+                    </div>
+
+                    <!-- Qo'shimcha maydonlar -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calendar me-2"></i>Tug'ilgan sana
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-birthday-cake"></i>
+                            </span>
+                            <input type="date" class="form-control" name="birth_date" id="birthDate">
+                        </div>
+                    </div>
+
+                    <!-- Shaxsiy ma'lumotlar -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-venus-mars me-2"></i>Jins
+                        </label>
+                        <div class="gender-select">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="male" value="M">
+                                <label class="form-check-label" for="male">
+                                    <i class="fas fa-male me-1"></i> Erkak
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="female" value="F">
+                                <label class="form-check-label" for="female">
+                                    <i class="fas fa-female me-1"></i> Ayol
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kelishuvlar -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="terms" required>
+                        <label class="form-check-label" for="terms">
+                            Men <a href="{% url 'terms_of_service' %}" class="text-decoration-none">foydalanish shartlari</a> 
+                            va <a href="{% url 'privacy_policy' %}" class="text-decoration-none">maxfiylik siyosati</a> 
+                            bilan tanishdim va roziman
+                        </label>
+                        <div class="invalid-feedback">
+                            Kelishuvni qabul qilishingiz kerak
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="newsletter">
+                        <label class="form-check-label" for="newsletter">
+                            Yangiliklar va maxsus takliflarni email orqali olishga roziman
+                        </label>
+                    </div>
+
+                    <!-- Submit tugmasi -->
+                    <button type="submit" class="btn btn-primary auth-btn w-100">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Hisob Yaratish
+                    </button>
+
+                    <!-- Kirish havolasi -->
+                    <div class="auth-footer text-center mt-4">
+                        <p class="mb-0">
+                            Allaqachon hisobingiz bormi? 
+                            <a href="{% url 'users:login' %}" class="auth-link">
+                                Hisobingizga kiring
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- CAPTCHA yoki qo'shimcha xavfsizlik -->
+            <div class="auth-security-info">
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-shield-alt me-2"></i>
+                    <strong>Xavfsizlik:</strong> Barcha ma'lumotlaringiz shifrlangan holda saqlanadi.
+                    Hech qanday shaxsiy ma'lumotlaringiz uchinchi tomonlarga berilmaydi.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/auth.js' %}"></script>
+<script src="{% static 'js/users/register.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Parol kuchini tekshirish
+    const password1 = document.getElementById('password1');
+    const password2 = document.getElementById('password2');
+    const strengthBar = document.getElementById('passwordStrength');
+    const strengthText = document.getElementById('strengthText');
+    const passwordMatch = document.getElementById('passwordMatch');
+    
+    if (password1) {
+        password1.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            // Parol uzunligi
+            if (password.length >= 8) strength += 1;
+            if (password.length >= 12) strength += 1;
+            
+            // Har xil turdagi belgilar
+            if (/[A-Z]/.test(password)) strength += 1;
+            if (/[a-z]/.test(password)) strength += 1;
+            if (/[0-9]/.test(password)) strength += 1;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+            
+            // Kuchni ko'rsatish
+            let strengthPercent = Math.min(100, strength * 20);
+            strengthBar.style.width = strengthPercent + '%';
+            
+            // Rang va matn
+            let color, text;
+            if (strength <= 2) {
+                color = '#dc3545';
+                text = 'Kuchsiz';
+            } else if (strength <= 4) {
+                color = '#ffc107';
+                text = 'O\'rtacha';
+            } else {
+                color = '#28a745';
+                text = 'Kuchli';
+            }
+            
+            strengthBar.style.backgroundColor = color;
+            strengthText.textContent = 'Parol kuchi: ' + text;
+            strengthText.style.color = color;
+        });
+    }
+    
+    // Parollarni solishtirish
+    if (password1 && password2) {
+        function checkPasswordMatch() {
+            if (password2.value === '') {
+                passwordMatch.textContent = '';
+                passwordMatch.style.color = '';
+            } else if (password1.value === password2.value) {
+                passwordMatch.innerHTML = '<i class="fas fa-check-circle me-1"></i>Parollar mos keladi';
+                passwordMatch.style.color = '#28a745';
+            } else {
+                passwordMatch.innerHTML = '<i class="fas fa-times-circle me-1"></i>Parollar mos kelmadi';
+                passwordMatch.style.color = '#dc3545';
+            }
+        }
+        
+        password1.addEventListener('input', checkPasswordMatch);
+        password2.addEventListener('input', checkPasswordMatch);
+    }
+    
+    // Username mavjudligini tekshirish
+    const checkUsernameBtn = document.getElementById('checkUsername');
+    const usernameInput = document.getElementById('id_username');
+    const usernameValid = document.getElementById('usernameValid');
+    const usernameInvalid = document.getElementById('usernameInvalid');
+    
+    if (checkUsernameBtn && usernameInput) {
+        checkUsernameBtn.addEventListener('click', function() {
+            const username = usernameInput.value.trim();
+            
+            if (username.length < 3) {
+                alert('Foydalanuvchi nomi kamida 3 belgidan iborat bo\'lishi kerak');
+                return;
+            }
+            
+            // Bu yerda AJAX so'rov yuborish kerak, lekin hozircha mock qilamiz
+            // Haqiqiy loyihada Django'dan tekshirish kerak
+            const isAvailable = Math.random() > 0.5; // Mock response
+            
+            if (isAvailable) {
+                usernameValid.style.display = 'block';
+                usernameInvalid.style.display = 'none';
+                usernameInput.classList.add('is-valid');
+                usernameInput.classList.remove('is-invalid');
+            } else {
+                usernameInvalid.style.display = 'block';
+                usernameValid.style.display = 'none';
+                usernameInput.classList.add('is-invalid');
+                usernameInput.classList.remove('is-valid');
+            }
+        });
+    }
+    
+    // Formani validatsiyasi
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            const terms = document.getElementById('terms');
+            
+            if (!terms.checked) {
+                e.preventDefault();
+                alert('Iltimos, foydalanish shartlarini qabul qiling!');
+                terms.focus();
+                return false;
+            }
+            
+            // Loading holati
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Yaratilmoqda...';
+            submitBtn.disabled = true;
+        });
+    }
+});
+</script>
+{% endblock %}
