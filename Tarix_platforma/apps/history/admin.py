@@ -30,7 +30,7 @@ class PeriodAdmin(admin.ModelAdmin):
     
     def topic_count(self, obj):
         return obj.topics.count()
-    topic_count.short_description = 'Mavzular soni'
+    topic_count.short_description = "Mavzular soni"
 
 
 @admin.register(Topic)

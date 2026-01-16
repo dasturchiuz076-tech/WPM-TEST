@@ -80,7 +80,7 @@
                                 <span class="input-group-text">
                                     <i class="fas fa-key"></i>
                                 </span>
-                                {{ form.password|add_class:"form-control"|attr:"placeholder:********"|attr:"id:password" }}
+                                {{ form.password|add_class:"form-control"|attr:"placeholder:********" }}
                                 <button type="button" class="input-group-text toggle-password">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -94,8 +94,8 @@
                         </div>
                         <!-- Esda qolish -->
                         <div class="form-check mb-4">
-                            {{ form.remember_me|add_class:"form-check-input" }}
-                            <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">Meni eslab qol</label>
+                            {{ form.remember_me|add_class:"form-check-input"|attr:"id:remember_me" }}
+                            <label class="form-check-label" for="remember_me">Meni eslab qol</label>
                         </div>
                         <!-- Submit tugmasi -->
                         <button type="submit" class="btn btn-primary auth-btn w-100">
@@ -156,7 +156,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Parolni ko'rsatish/yashirish
     const togglePassword = document.querySelector('.toggle-password');
-    const passwordInput = document.getElementById('password');
+    const passwordInput = document.getElementById('id_password');
     
     if (togglePassword && passwordInput) {
         togglePassword.addEventListener('click', function() {
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             const username = document.getElementById('id_username').value.trim();
-            const password = document.getElementById('password').value.trim();
+            const password = document.getElementById('id_password').value.trim();
             
             if (!username || !password) {
                 e.preventDefault();

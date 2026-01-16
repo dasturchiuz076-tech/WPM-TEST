@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView as AuthLoginView
 from django.views.generic import CreateView, UpdateView, ListView, TemplateView
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -14,15 +15,16 @@ from apps.history.models import Topic
 from apps.testsystem.models import QuizResult
 from django.db import models
 
-class LoginView(CreateView):
-    form_class = LoginForm
+class LoginView(AuthLoginView):
+    authentication_form = LoginForm
     template_name = 'users/login.html'
-    success_url = reverse_lazy('home')
-    
+    redirect_authenticated_user = True
+
     def form_valid(self, form):
+        # Call parent to perform login and redirect
+        response = super().form_valid(form)
         user = form.get_user()
-        login(self.request, user)
-        
+
         # Log activity
         UserActivity.objects.create(
             user=user,
@@ -31,14 +33,9 @@ class LoginView(CreateView):
             ip_address=self.request.META.get('REMOTE_ADDR'),
             user_agent=self.request.META.get('HTTP_USER_AGENT', '')
         )
-        
+
         messages.success(self.request, f'Xush kelibsiz, {user.get_full_name() or user.username}!')
-        return super().form_valid(form)
-    
-    def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('home')
-        return super().get(request, *args, **kwargs)
+        return response
 
 
 class LogoutView(LoginRequiredMixin, TemplateView):

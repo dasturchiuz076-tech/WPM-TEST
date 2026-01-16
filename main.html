@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moshina O'yini</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+        }
+
+        body {
+            background-color: #87CEEB;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            max-height: 100vh;
+        }
+
+        .header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #FF6B6B;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 0 #FFD166;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 10px;
+            background-color: #FFD166;
+            padding: 8px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-box {
+            font-size: 1.4rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            color: #EF476F;
+            font-size: 1.6rem;
+        }
+
+        .game-area {
+            position: relative;
+            width: 100%;
+            flex-grow: 1;
+            min-height: 300px;
+            max-height: 50vh;
+            background-color: #228B22;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            border: 6px solid #8B4513;
+        }
+
+        /* Yo'l */
+        .road {
+            position: absolute;
+            width: 250px;
+            height: 100%;
+            background-color: #555;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Yo'l chiziqlari */
+        .road-line {
+            width: 15px;
+            height: 40px;
+            background-color: #FFD700;
+            margin: 30px 0;
+        }
+
+        /* Moshina */
+        .car {
+            position: absolute;
+            width: 70px;
+            height: 100px;
+            background-color: #FF0000;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 12px 12px 5px 5px;
+            z-index: 10;
+            transition: left 0.2s ease;
+        }
+
+        /* Moshina qismlari */
+        .car-top {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background-color: #FF3333;
+            top: -25px;
+            left: 5px;
+            border-radius: 12px 12px 5px 5px;
+        }
+
+        .car-window {
+            position: absolute;
+            width: 45px;
+            height: 20px;
+            background-color: #87CEEB;
+            top: 5px;
+            left: 8px;
+            border-radius: 6px;
+        }
+
+        .car-wheel {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background-color: #222;
+            border-radius: 50%;
+            bottom: -8px;
+        }
+
+        .car-wheel.left {
+            left: 8px;
+        }
+
+        .car-wheel.right {
+            right: 8px;
+        }
+
+        /* To'siq */
+        .obstacle {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background-color: #8B0000;
+            border-radius: 8px;
+            top: -100px;
+            z-index: 5;
+        }
+
+        /* Yulduzcha */
+        .star {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background-color: #FFD700;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            top: -50px;
+            z-index: 5;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Kontrollar */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .control-btn {
+            width: 80px;
+            height: 80px;
+            background-color: #4ECDC4;
+            border: none;
+            border-radius: 50%;
+            font-size: 2.5rem;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #2A9D8F, 0 10px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .control-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #2A9D8F, 0 3px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tugmalar */
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            font-size: 1.4rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .start-btn {
+            background-color: #06D6A0;
+            color: white;
+            box-shadow: 0 6px 0 #04A97F;
+        }
+
+        .restart-btn {
+            background-color: #FFD166;
+            color: #333;
+            box-shadow: 0 6px 0 #E6B950;
+        }
+
+        .btn:active {
+            transform: translateY(6px);
+            box-shadow: none;
+        }
+
+        /* O'yin tugashi */
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            display: none;
+        }
+
+        .game-over-text {
+            font-size: 3rem;
+            color: #FF6B6B;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 0 #000;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        /* Ko'rsatmalar */
+        .instructions {
+            color: #333;
+            font-size: 1rem;
+            background-color: rgba(255,255,255,0.7);
+            padding: 8px;
+            border-radius: 10px;
+            margin-top: 5px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Animatsiyalar */
+        @keyframes crash {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1) rotate(5deg); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        .crash {
+            animation: crash 0.5s ease;
+        }
+
+        @keyframes collect {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.2); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        .collect {
+            animation: collect 0.5s ease;
+        }
+
+        /* Mobil uchun moslashuv */
+        @media (max-height: 700px) {
+            .game-area {
+                max-height: 45vh;
+            }
+            
+            .car {
+                width: 60px;
+                height: 85px;
+            }
+            
+            .car-top {
+                width: 50px;
+                height: 35px;
+            }
+            
+            .control-btn {
+                width: 70px;
+                height: 70px;
+                font-size: 2.2rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stat-box {
+                font-size: 1.2rem;
+            }
+            
+            .stat-value {
+                font-size: 1.4rem;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .game-area {
+                max-height: 40vh;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .stats {
+                padding: 6px;
+                margin-bottom: 5px;
+            }
+            
+            .control-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+            
+            .buttons {
+                margin-bottom: 5px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .road {
+                width: 200px;
+            }
+            
+            .game-area {
+                border-width: 4px;
+            }
+            
+            .instructions {
+                font-size: 0.9rem;
+                padding: 6px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .road {
+                width: 180px;
+            }
+            
+            .car {
+                width: 60px;
+                height: 85px;
+            }
+            
+            .car-top {
+                width: 50px;
+                height: 35px;
+            }
+            
+            .car-wheel {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .controls {
+                gap: 15px;
+            }
+            
+            .control-btn {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 90%;
+            }
+        }
+
+        /* Kichik ekranlar uchun */
+        @media (max-height: 500px) {
+            .header {
+                margin-bottom: 5px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 2px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 5px;
+            }
+            
+            .stats {
+                padding: 4px;
+                margin-bottom: 4px;
+            }
+            
+            .game-area {
+                max-height: 35vh;
+                margin-bottom: 5px;
+            }
+            
+            .controls {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⭐ Moshina O'yini ⭐</h1>
+            <div class="subtitle">Yulduzchalarni yig'ing, to'siqlardan qoching!</div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                Ochko: <span id="score" class="stat-value">0</span>
+            </div>
+            <div class="stat-box">
+                Hayot: <span id="lives" class="stat-value">3</span>
+            </div>
+            <div class="stat-box">
+                Yulduzcha: <span id="stars" class="stat-value">0</span>
+            </div>
+        </div>
+        
+        <div class="game-area" id="gameArea">
+            <!-- Yo'l -->
+            <div class="road">
+                <div class="road-line"></div>
+                <div class="road-line"></div>
+                <div class="road-line"></div>
+                <div class="road-line"></div>
+                <div class="road-line"></div>
+            </div>
+            
+            <!-- Moshina -->
+            <div class="car" id="car">
+                <div class="car-top">
+                    <div class="car-window"></div>
+                </div>
+                <div class="car-wheel left"></div>
+                <div class="car-wheel right"></div>
+            </div>
+            
+            <!-- To'siqlar va yulduzchalar bu yerda paydo bo'ladi -->
+            
+            <!-- O'yin tugashi -->
+            <div class="game-over" id="gameOver">
+                <div class="game-over-text">O'yin Tugadi!</div>
+                <button class="btn restart-btn" id="restartBtn">Qayta O'ynash</button>
+            </div>
+        </div>
+        
+        <!-- Kontrollar -->
+        <div class="controls">
+            <button class="control-btn" id="leftBtn">←</button>
+            <button class="control-btn" id="rightBtn">→</button>
+        </div>
+        
+        <!-- Boshlash va qayta o'ynash tugmalari -->
+        <div class="buttons">
+            <button class="btn start-btn" id="startBtn">START</button>
+            <button class="btn restart-btn" id="restartBtn2">QAYTA O'YNASH</button>
+        </div>
+        
+        <!-- Ko'rsatmalar -->
+        <div class="instructions">
+            <strong>O'ynash usuli:</strong> Tugmalar yoki klaviatura bilan mashinani harakatlantiring. Yulduzchalarni yig'ing (+10 ochko). To'siqlardan qoching!
+        </div>
+    </div>
+
+    <script>
+        // O'yin elementlari
+        const car = document.getElementById('car');
+        const gameArea = document.getElementById('gameArea');
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const restartBtn2 = document.getElementById('restartBtn2');
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
+        const gameOverScreen = document.getElementById('gameOver');
+        
+        // O'yin statistikasi
+        const scoreElement = document.getElementById('score');
+        const livesElement = document.getElementById('lives');
+        const starsElement = document.getElementById('stars');
+        
+        // O'yin o'zgaruvchilari
+        let gameActive = false;
+        let score = 0;
+        let lives = 3;
+        let starsCollected = 0;
+        let carPosition = 50; // foiz sifatida
+        let gameSpeed = 3;
+        let gameInterval;
+        let obstacleInterval;
+        let starInterval;
+        
+        // Yo'l chegaralari
+        const minPosition = 15; // minimal chap chegarasi
+        const maxPosition = 85; // maksimal o'ng chegarasi
+        
+        // O'yinni boshlash
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', restartGame);
+        restartBtn2.addEventListener('click', restartGame);
+        
+        // Klaviatura boshqaruvi
+        document.addEventListener('keydown', (e) => {
+            if (!gameActive) return;
+            
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                moveCar(-15);
+            } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+                moveCar(15);
+            }
+        });
+        
+        // Ekrandagi tugmalar boshqaruvi
+        leftBtn.addEventListener('click', () => {
+            if (gameActive) moveCar(-15);
+        });
+        
+        rightBtn.addEventListener('click', () => {
+            if (gameActive) moveCar(15);
+        });
+        
+        // Mobil uchun touch harakati
+        let touchStartX = 0;
+        
+        gameArea.addEventListener('touchstart', (e) => {
+            if (!gameActive) return;
+            touchStartX = e.touches[0].clientX;
+            e.preventDefault();
+        }, { passive: false });
+        
+        gameArea.addEventListener('touchmove', (e) => {
+            if (!gameActive) return;
+            const touchX = e.touches[0].clientX;
+            const diff = touchStartX - touchX;
+            
+            if (Math.abs(diff) > 15) {
+                if (diff > 0) {
+                    moveCar(-15);
+                } else {
+                    moveCar(15);
+                }
+                touchStartX = touchX;
+            }
+            e.preventDefault();
+        }, { passive: false });
+        
+        // Mashinani harakatlantirish
+        function moveCar(amount) {
+            carPosition += amount;
+            
+            // Chegaralarni tekshirish
+            if (carPosition < minPosition) carPosition = minPosition;
+            if (carPosition > maxPosition) carPosition = maxPosition;
+            
+            // Mashinani yangi joyiga ko'chirish
+            car.style.left = carPosition + '%';
+        }
+        
+        // O'yinni boshlash
+        function startGame() {
+            if (gameActive) return;
+            
+            gameActive = true;
+            resetGame();
+            gameOverScreen.style.display = 'none';
+            
+            // START tugmasini o'chirish
+            startBtn.style.display = 'none';
+            restartBtn2.style.display = 'inline-block';
+            
+            // To'siq yaratish intervali
+            obstacleInterval = setInterval(createObstacle, 1500);
+            
+            // Yulduzcha yaratish intervali
+            starInterval = setInterval(createStar, 2000);
+            
+            // O'yin tsikli
+            gameInterval = setInterval(updateGame, 20);
+        }
+        
+        // O'yinni yangilash
+        function updateGame() {
+            if (!gameActive) return;
+            
+            // Barcha to'siqlarni pastga harakatlantirish
+            const obstacles = document.querySelectorAll('.obstacle');
+            obstacles.forEach(obstacle => {
+                const top = parseInt(obstacle.style.top) || -100;
+                obstacle.style.top = (top + gameSpeed) + 'px';
+                
+                // Agar to'siq ekrandan chiqib ketsa, uni olib tashlash
+                if (top > gameArea.offsetHeight) {
+                    obstacle.remove();
+                }
+                
+                // To'qnashuvni tekshirish
+                checkCollision(obstacle);
+            });
+            
+            // Barcha yulduzchalarni pastga harakatlantirish
+            const stars = document.querySelectorAll('.star');
+            stars.forEach(star => {
+                const top = parseInt(star.style.top) || -50;
+                star.style.top = (top + gameSpeed) + 'px';
+                
+                // Agar yulduzcha ekrandan chiqib ketsa, uni olib tashlash
+                if (top > gameArea.offsetHeight) {
+                    star.remove();
+                }
+                
+                // Yulduzchani to'plashni tekshirish
+                checkStarCollection(star);
+            });
+        }
+        
+        // To'siq yaratish
+        function createObstacle() {
+            if (!gameActive) return;
+            
+            const obstacle = document.createElement('div');
+            obstacle.className = 'obstacle';
+            
+            // To'siqning tasodifiy joyi (yo'l doirasida)
+            const leftPosition = Math.random() * 60 + 20; // 20% dan 80% gacha
+            obstacle.style.left = leftPosition + '%';
+            obstacle.style.top = '-100px';
+            
+            // To'siqning turli shakllari
+            const obstacleTypes = [
+                {bg: '#8B0000', width: '70', height: '70'}, // kvadrat
+                {bg: '#A52A2A', width: '90', height: '50'}, // to'rtburchak
+                {bg: '#800000', width: '60', height: '90'}  // baland
+            ];
+            
+            const type = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+            obstacle.style.backgroundColor = type.bg;
+            obstacle.style.width = type.width + 'px';
+            obstacle.style.height = type.height + 'px';
+            
+            gameArea.appendChild(obstacle);
+        }
+        
+        // Yulduzcha yaratish
+        function createStar() {
+            if (!gameActive) return;
+            
+            const star = document.createElement('div');
+            star.className = 'star';
+            
+            // Yulduzchaning tasodifiy joyi (yo'l doirasida)
+            const leftPosition = Math.random() * 60 + 20; // 20% dan 80% gacha
+            star.style.left = leftPosition + '%';
+            star.style.top = '-50px';
+            
+            gameArea.appendChild(star);
+        }
+        
+        // To'qnashuvni tekshirish
+        function checkCollision(obstacle) {
+            const carRect = car.getBoundingClientRect();
+            const obstacleRect = obstacle.getBoundingClientRect();
+            
+            // Oddiy to'qnashuvni tekshirish
+            if (
+                carRect.left < obstacleRect.right &&
+                carRect.right > obstacleRect.left &&
+                carRect.top < obstacleRect.bottom &&
+                carRect.bottom > obstacleRect.top
+            ) {
+                // To'qnashuv bo'ldi
+                handleCollision();
+                obstacle.remove();
+            }
+        }
+        
+        // Yulduzchani to'plashni tekshirish
+        function checkStarCollection(star) {
+            const carRect = car.getBoundingClientRect();
+            const starRect = star.getBoundingClientRect();
+            
+            if (
+                carRect.left < starRect.right &&
+                carRect.right > starRect.left &&
+                carRect.top < starRect.bottom &&
+                carRect.bottom > starRect.top
+            ) {
+                // Yulduzchani to'plash
+                collectStar();
+                star.remove();
+            }
+        }
+        
+        // To'qnashuvni boshqarish
+        function handleCollision() {
+            if (!gameActive) return;
+            
+            // Mashinaga to'qnashuv animatsiyasi
+            car.classList.add('crash');
+            setTimeout(() => car.classList.remove('crash'), 500);
+            
+            // Hayotni kamaytirish
+            lives--;
+            livesElement.textContent = lives;
+            
+            // Agar hayotlar tugasa, o'yin tugadi
+            if (lives <= 0) {
+                endGame();
+            } else {
+                // O'yin sekinlashadi vaqtincha
+                const originalSpeed = gameSpeed;
+                gameSpeed = 1;
+                
+                setTimeout(() => {
+                    gameSpeed = originalSpeed;
+                }, 1000);
+            }
+        }
+        
+        // Yulduzchani to'plash
+        function collectStar() {
+            if (!gameActive) return;
+            
+            // Mashinaga yulduzcha to'plash animatsiyasi
+            car.classList.add('collect');
+            setTimeout(() => car.classList.remove('collect'), 500);
+            
+            // Ochko qo'shish
+            score += 10;
+            scoreElement.textContent = score;
+            
+            // Yig'ilgan yulduzchalar sonini oshirish
+            starsCollected++;
+            starsElement.textContent = starsCollected;
+            
+            // Har 5 yulduzchada o'yin tezligi oshadi
+            if (starsCollected % 5 === 0) {
+                gameSpeed += 0.5;
+            }
+        }
+        
+        // O'yinni tugatish
+        function endGame() {
+            gameActive = false;
+            
+            // Intervalarni to'xtatish
+            clearInterval(gameInterval);
+            clearInterval(obstacleInterval);
+            clearInterval(starInterval);
+            
+            // O'yin tugashi ekranini ko'rsatish
+            gameOverScreen.style.display = 'flex';
+        }
+        
+        // O'yinni qayta boshlash
+        function restartGame() {
+            // Barcha to'siqlar va yulduzchalarni olib tashlash
+            document.querySelectorAll('.obstacle, .star').forEach(el => el.remove());
+            
+            // O'yinni boshlash
+            startGame();
+        }
+        
+        // O'yinni qayta sozlash
+        function resetGame() {
+            score = 0;
+            lives = 3;
+            starsCollected = 0;
+            gameSpeed = 3;
+            carPosition = 50;
+            
+            // Mashinani markazga qaytarish
+            car.style.left = '50%';
+            
+            // Statistikalarni yangilash
+            scoreElement.textContent = score;
+            livesElement.textContent = lives;
+            starsElement.textContent = starsCollected;
+            
+            // Tugmalarni to'g'ri ko'rsatish
+            restartBtn2.style.display = 'inline-block';
+        }
+        
+        // Dastlabki sozlash
+        restartBtn2.style.display = 'none';
+        
+        // Boshlash animatsiyasi
+        startBtn.addEventListener('mousedown', () => {
+            startBtn.style.transform = 'translateY(6px)';
+            startBtn.style.boxShadow = 'none';
+        });
+        
+        startBtn.addEventListener('mouseup', () => {
+            startBtn.style.transform = 'translateY(0)';
+            startBtn.style.boxShadow = '0 6px 0 #04A97F';
+        });
+        
+        // O'yin haqida ma'lumot
+        console.log("O'yin tayyor! 5 yoshli bolalar uchun mo'ljallangan.");
+        console.log("Ko'rsatmalar: Mashinani chap/o'ng tugmalar yoki klaviatura yordamida boshqaring.");
+        console.log("Maqsad: Yulduzchalarni to'plash va to'siqlardan qochish.");
+    </script>
+</body>
+</html>
